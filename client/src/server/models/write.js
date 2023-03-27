@@ -1,6 +1,5 @@
-import fs from 'fs'
-import path from 'path'
-
+const fs = require('fs')
+const path = require('path')
 async function write(data) {
     try {
         if (Array.isArray(data)) {
