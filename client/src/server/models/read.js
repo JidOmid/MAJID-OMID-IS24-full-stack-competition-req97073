@@ -2,7 +2,9 @@ const fs = require("fs");
 const path = require("path");
 
 async function read() {
+  //error catching
   try {
+    //Read db.json and resolve parsed data
     const data = await new Promise(async (resolve, reject) => {
       await fs.readFile(path.resolve(__dirname, "../db/db.json"), (err, data) => {
         if (err) {
