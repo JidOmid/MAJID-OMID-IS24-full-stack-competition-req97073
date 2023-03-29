@@ -2,5 +2,6 @@
 module.exports = {
   ...require("./health"),
   ...require("./getData"),
-  ...require("./addProduct")
+  ...require("./addProduct"),
+  ...require("./editProduct"),
 };
