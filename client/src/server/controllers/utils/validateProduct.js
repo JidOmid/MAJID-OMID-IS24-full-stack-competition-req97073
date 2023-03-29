@@ -1,15 +1,17 @@
-function validateProducts(product) {
+function validateProduct(product, checkId = false) {
   const badValues = [];
   const {
+    productId,
     productName,
     productOwnerName,
     Developers,
     scrumMasterName,
     startDate,
-    methodology
+    methodology,
   } = product;
 
-
+  if (checkId && (!productId || typeof productId !== "string"))
+    badValues.push("productId");
   if (!productName || typeof productName !== "string")
     badValues.push("productName");
   if (!productOwnerName || typeof productOwnerName !== "string")
@@ -25,6 +27,7 @@ function validateProducts(product) {
     if (!dev || typeof dev !== "string") badValues.push("Developers");
   });
 
-
   return badValues;
 }
+
+module.exports.validateProduct = validateProduct;
