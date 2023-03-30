@@ -20,6 +20,7 @@ async function write(data) {
           }
         );
       });
+      //return resolved data
       return insert;
     }
     return null;
