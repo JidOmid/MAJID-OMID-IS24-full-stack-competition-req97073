@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "IMB Submission",
+    "title": "IS-24 Submission",
     "description": "API Documentation",
     "version": "1.0.0"
   },
@@ -130,7 +130,7 @@
       }
     },
     "/edit-data": {
-      "patch": {
+      "put": {
         "tags": ["endpoints"],
         "summary": "Edits product",
         "description": "Edited existing product in db.json",

@@ -5,13 +5,11 @@ export default function EditProduct({
   refreshList,
   setRefreshList,
   setShowEdit,
-  showEdit,
   product,
 }) {
   const [form, setForm] = useState({});
   const [postError, setPostError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  //state for current developer
   const [currentDeveloper, setCurrentDeveloper] = useState("");
 
   useEffect(() => {
@@ -21,7 +19,7 @@ export default function EditProduct({
   async function handleSave(e) {
     e.preventDefault();
     axios
-      .patch("/api/edit-product", form)
+      .put("/api/edit-product", form)
       .then(function (response) {
         setForm({});
         setCurrentDeveloper("");
@@ -33,16 +31,17 @@ export default function EditProduct({
       .catch(function (error) {
         const data = error.response.data;
         if (data) {
-          setErrorMessage(`${data.message}: ${data.fields.join(",")}`);
+          setErrorMessage(`${data.message}: ${data.fields.join(", ")}`);
         }
         setPostError(true);
       });
   }
 
   function handleCancel() {
-    setForm({});
+    // setForm({});
     setCurrentDeveloper("");
     setShowEdit(false);
+    setPostError(false);
   }
 
   //add current developer entry to array of developers
@@ -74,39 +73,36 @@ export default function EditProduct({
   }
 
   return (
-    <form
-      style={{display: showEdit ? "" : "none"}}
-      onSubmit={(e) => handleSave(e)}
-    >
-      <label>
-        Product Name:
+    <form className="form-content" onSubmit={(e) => handleSave(e)}>
+      <div className="form-field">
+        <label>Product Name:</label>
         <input
           type="text"
           value={form?.productName || ""}
           required
           onChange={(e) => handleChange("productName", e)}
         />
-      </label>
-      <label>
-        Scrum Master:
+      </div>
+      <div className="form-field">
+        <label>Scrum Master:</label>
         <input
           type="text"
           value={form?.scrumMasterName || ""}
           required
           onChange={(e) => handleChange("scrumMasterName", e)}
         />
-      </label>
-      <label>
-        Product Owner:
+      </div>
+      <div className="form-field">
+        <label>Product Owner:</label>
         <input
           type="text"
           value={form?.productOwnerName || ""}
           required
           onChange={(e) => handleChange("productOwnerName", e)}
         />
-      </label>
-      <label>
-        Developers:
+      </div>
+      <div className="form-field">
+        <label>Developers:</label>
         <input
           type="text"
           onChange={(e) => setCurrentDeveloper(e.target.value)}
@@ -119,7 +115,7 @@ export default function EditProduct({
         >
           Add Developer
         </button>
-        <ul>
+        <ul className="form-developers-ul">
           {form?.Developers?.length
             ? form.Developers.map((developer, i) => (
                 <li key={developer + i}>
@@ -133,28 +129,32 @@ export default function EditProduct({
               ))
             : null}
         </ul>
-      </label>
-      <label htmlFor="methodology">Methodology:</label>
+      </div>
+      <div className="form-field">
+        <label htmlFor="methodology">Methodology:</label>
 
-      <select
-        name="methodology"
-        id="methodology"
-        defaultValue={form?.methodology || ""}
-        onChange={(e) => handleChange("methodology", e)}
-      >
-        <option hidden value="">
-          {form?.methodology}
-        </option>
-        <option value="Agile">Agile</option>
-        <option value="Waterfall">Waterfall</option>
-      </select>
+        <select
+          name="methodology"
+          id="methodology"
+          defaultValue={form?.methodology || ""}
+          onChange={(e) => handleChange("methodology", e)}
+        >
+          <option hidden value="">
+            {form?.methodology}
+          </option>
+          <option value="Agile">Agile</option>
+          <option value="Waterfall">Waterfall</option>
+        </select>
+      </div>
       <p style={{display: postError ? "" : "none"}}>
         {errorMessage ? errorMessage : "An error occured. Please try again."}
       </p>
-      <button type="submit">Save</button>
-      <button type="reset" onClick={handleCancel}>
-        Cancel
-      </button>
+      <div className="form-buttons">
+        <button type="submit">Save</button>
+        <button type="reset" onClick={handleCancel}>
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }

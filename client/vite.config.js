@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import {defineConfig} from "vite";
+import react from "@vitejs/plugin-react";
 
-const { PORT = 8000 } = process.env;
+const {PORT = 8000} = process.env;
 
 // Set port to 3000 and proxy from 8000
 export default defineConfig({
@@ -9,7 +9,7 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
-      '/api': {
+      "/api": {
         target: `http://localhost:${PORT}`,
         changeOrigin: true,
         secure: false,

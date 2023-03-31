@@ -2,8 +2,8 @@ import axios from "axios";
 import {useState, useEffect, useMemo} from "react";
 
 import "./App.css";
-import AddProduct from "./components/AddProduct";
-import EditProduct from "./components/EditProduct";
+import AddProductModal from "./components/AddProductModal";
+import EditProductModal from "./components/EditProductModal";
 import Table from "./components/Table";
 
 function App() {
@@ -11,16 +11,26 @@ function App() {
   const [refreshList, setRefreshList] = useState(false);
   const [productIndex, setProductIndex] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
+  const [showAdd, setShowAdd] = useState(false);
+  const [postError, setPostError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
+  //get request on first page render and any time refresh list is updated
   useEffect(() => {
     axios({
-      method: "get",
       url: "/api/get-data",
-    }).then(function (response) {
-      setTableData(response.data);
-    });
+    })
+      .then(function (response) {
+        setTableData(response.data);
+        setPostError(false);
+      })
+      .catch(function (error) {
+        setPostError(true);
+        setErrorMessage("Internal Server Error. Could not load data.");
+      });
   }, [refreshList]);
 
+  //memoized columns for react-table library
   const columns = useMemo(
     () => [
       {
@@ -40,7 +50,11 @@ function App() {
       },
       {
         Header: "Developers",
-        accessor: "Developers",
+        accessor: (tableData) => {
+          return tableData.Developers.map((dev, i, {length}) => {
+            return `${dev}${i + 1 === length ? "" : ", "}`;
+          });
+        },
       },
       {
         Header: "Start Date",
@@ -56,30 +70,39 @@ function App() {
     ],
     []
   );
-  // const data = useMemo(() => tableData, [])
 
   return (
     <div className="App">
+      <div className="Header">IS-24 Submission</div>
+      <div className="Add-Product-Button">
+        <button type="button" onClick={() => setShowAdd(true)}>
+          Add Product
+        </button>
+      </div>
+      <AddProductModal
+        showAdd={showAdd}
+        setShowAdd={setShowAdd}
+        refreshList={refreshList}
+        setRefreshList={setRefreshList}
+      />
+      <EditProductModal
+        showEdit={showEdit}
+        setShowEdit={setShowEdit}
+        refreshList={refreshList}
+        setRefreshList={setRefreshList}
+        product={tableData[productIndex]}
+      />
       <div>
-        <div>
-          <AddProduct
-            refreshList={refreshList}
-            setRefreshList={setRefreshList}
-          />
-          <EditProduct
-            refreshList={refreshList}
-            setRefreshList={setRefreshList}
-            setShowEdit={setShowEdit}
-            showEdit={showEdit}
-            product={tableData[productIndex]}
-            style={{display: showEdit ? "" : "none"}}
-          />
-          <Table
-            columns={columns}
-            data={tableData}
-            setProductIndex={setProductIndex}
-            setShowEdit={setShowEdit}
-          />
+        <div style={{display: "flex", justifyContent: "center"}}>
+          <div className="Table-Wrapper">
+            <Table
+              columns={columns}
+              data={tableData}
+              setProductIndex={setProductIndex}
+              setShowEdit={setShowEdit}
+            />
+            {postError ? <span>{errorMessage}</span> : null}
+          </div>
         </div>
       </div>
     </div>
