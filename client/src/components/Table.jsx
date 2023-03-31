@@ -1,32 +1,5 @@
-import {
-  useTable,
-  useGlobalFilter,
-  useAsyncDebounce,
-  useFilters,
-} from "react-table";
+import {useTable, useGlobalFilter, useFilters} from "react-table";
 import {useState, useMemo} from "react";
-
-function GlobalFilter({preGlobalFilteredRows, globalFilter, setGlobalFilter}) {
-  const count = preGlobalFilteredRows.length;
-  const [value, setValue] = useState(globalFilter);
-  const onChange = useAsyncDebounce((value) => {
-    setGlobalFilter(value || undefined);
-  }, 200);
-
-  return (
-    <span>
-      Search:{" "}
-      <input
-        value={value || ""}
-        onChange={(e) => {
-          setValue(e.target.value);
-          onChange(e.target.value);
-        }}
-        placeholder={`${count} records...`}
-      />
-    </span>
-  );
-}
 
 export default function Table({columns, data, setProductIndex, setShowEdit}) {
   const [filtered, setFiltered] = useState("all");
@@ -36,8 +9,6 @@ export default function Table({columns, data, setProductIndex, setShowEdit}) {
     headerGroups,
     rows,
     prepareRow,
-    state,
-    preGlobalFilteredRows,
     setGlobalFilter,
     setFilter,
   } = useTable(
@@ -51,31 +22,34 @@ export default function Table({columns, data, setProductIndex, setShowEdit}) {
 
   return (
     <>
-      <label htmlFor="filters">Filter by:</label>
-      <input
-        type="text"
-        onChange={(e) => {
-          filtered === "all"
-            ? setGlobalFilter(e.target.value)
-            : setFilter(filtered, e.target.value);
-        }}
-      />
-      <select
-        name="filters"
-        id="filters"
-        onChange={(e) => {
-          setFiltered(e.target.value);
-        }}
-      >
-        <option value="all">All</option>
-        <option value="productName">Product Name</option>
-        <option value="scrumMasterName">Scrum Master</option>
-        <option value="productOwnerName">Owner</option>
-        <option value="Developers">Developers</option>
-      </select>
-      <span>
-        <strong> Total Products: {rows.length}</strong>
-      </span>
+      <div className="Table-Search-Wrapper">
+        <select
+          name="filters"
+          id="filters"
+          onChange={(e) => {
+            setFiltered(e.target.value);
+          }}
+        >
+          <option value="all">All</option>
+          <option value="productName">Product Name</option>
+          <option value="scrumMasterName">Scrum Master</option>
+          <option value="productOwnerName">Owner</option>
+          <option value="Developers">Developers</option>
+        </select>
+        <input
+          className="Table-Search-Bar"
+          placeholder="Search"
+          type="text"
+          onChange={(e) => {
+            filtered === "all"
+              ? setGlobalFilter(e.target.value)
+              : setFilter(filtered, e.target.value);
+          }}
+        />
+        <span style={{marginLeft: "5px"}}>
+          <strong> Total Products: {rows.length}</strong>
+        </span>
+      </div>
       <table {...getTableProps()} border="1">
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -102,15 +76,15 @@ export default function Table({columns, data, setProductIndex, setShowEdit}) {
                   if (cell.column.Header === "Edit") {
                     return (
                       <td {...cell.getCellProps()}>
-                        <button
+                        <img
+                          src="/pen.svg"
+                          className="pen"
                           type="button"
                           onClick={() => {
-                            setProductIndex(i);
+                            setProductIndex(cell.row.id);
                             setShowEdit(true);
                           }}
-                        >
-                          Edit
-                        </button>
+                        />
                       </td>
                     );
                   }

@@ -1,14 +1,13 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import axios from "axios";
 
-export default function AddProduct({refreshList, setRefreshList}) {
+export default function AddProduct({refreshList, setRefreshList, setShowAdd}) {
   const [form, setForm] = useState({});
-  const [showForm, setShowForm] = useState(false);
   const [postError, setPostError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  //state for current developer
   const [currentDeveloper, setCurrentDeveloper] = useState("");
 
+  //when save button is pressed. post request to db, refreshes table. display error message with concerned fields
   async function handleSave(e) {
     e.preventDefault();
     axios
@@ -16,7 +15,7 @@ export default function AddProduct({refreshList, setRefreshList}) {
       .then(function (response) {
         setForm({});
         setCurrentDeveloper("");
-        setShowForm(false);
+        setShowAdd(false);
         e.target.reset();
         setPostError(false);
         setRefreshList(!refreshList);
@@ -24,16 +23,18 @@ export default function AddProduct({refreshList, setRefreshList}) {
       .catch(function (error) {
         const data = error.response.data;
         if (data) {
-          setErrorMessage(`${data.message}: ${data.fields.join(",")}`);
+          setErrorMessage(`${data.message}: ${data.fields.join(", ")}`);
         }
         setPostError(true);
       });
   }
 
+  //clears form and error message
   function handleCancel() {
     setForm({});
     setCurrentDeveloper("");
-    setShowForm(false);
+    setShowAdd(false);
+    setPostError(false);
   }
 
   //add current developer entry to array of developers
@@ -65,56 +66,45 @@ export default function AddProduct({refreshList, setRefreshList}) {
   }
   return (
     <>
-      <button
-        style={{display: showForm ? "none" : ""}}
-        type="button"
-        onClick={() => setShowForm(!showForm)}
-      >
-        Add Product
-      </button>
-      <form
-        style={{display: showForm ? "" : "none"}}
-        onSubmit={(e) => handleSave(e)}
-      >
-        <label>
-          Product Name:
+      <form className="form-content" onSubmit={(e) => handleSave(e)}>
+        <div className="form-field">
+          <label>Product Name:</label>
           <input
             type="text"
             required
             onChange={(e) => handleChange("productName", e)}
           />
-        </label>
-        <label>
-          Scrum Master:
+        </div>
+        <div className="form-field">
+          <label>Scrum Master:</label>
           <input
             type="text"
             required
             onChange={(e) => handleChange("scrumMasterName", e)}
           />
-        </label>
-        <label>
-          Product Owner:
+        </div>
+        <div className="form-field">
+          <label>Product Owner:</label>
           <input
             type="text"
             required
             onChange={(e) => handleChange("productOwnerName", e)}
           />
-        </label>
-        <label>
-          Developers:
+        </div>
+        <div className="form-field">
+          <label>Developers:</label>
           <input
             type="text"
             onChange={(e) => setCurrentDeveloper(e.target.value)}
           />
           <button
-            //button disables once 5 developers have been added
             type="button"
             disabled={form?.Developers?.length === 5 ? true : false}
             onClick={handleDeveloper}
           >
             Add Developer
           </button>
-          <ul>
+          <ul className="form-developers-ul">
             {form?.Developers?.length
               ? form.Developers.map((developer, i) => (
                   <li key={developer + i}>
@@ -128,32 +118,36 @@ export default function AddProduct({refreshList, setRefreshList}) {
                 ))
               : null}
           </ul>
-        </label>
-        <label htmlFor="methodology">Methodology:</label>
+        </div>
+        <div className="form-field">
+          <label htmlFor="methodology">Methodology:</label>
 
-        <select
-          name="methodology"
-          id="methodology"
-          defaultValue={""}
-          onChange={(e) => handleChange("methodology", e)}
-        >
-          <option hidden value="">
-            Select Methodology
-          </option>
-          <option value="Agile">Agile</option>
-          <option value="Waterfall">Waterfall</option>
-        </select>
-        <label>
-          Start Date:
+          <select
+            name="methodology"
+            id="methodology"
+            defaultValue={""}
+            onChange={(e) => handleChange("methodology", e)}
+          >
+            <option hidden value="">
+              Select Methodology
+            </option>
+            <option value="Agile">Agile</option>
+            <option value="Waterfall">Waterfall</option>
+          </select>
+        </div>
+        <div className="form-field">
+          <label>Start Date:</label>
           <input type="date" onChange={(e) => handleChange("startDate", e)} />
-        </label>
+        </div>
         <p style={{display: postError ? "" : "none"}}>
           {errorMessage ? errorMessage : "An error occured. Please try again."}
         </p>
-        <button type="submit">Save</button>
-        <button type="reset" onClick={handleCancel}>
-          Cancel
-        </button>
+        <div className="form-buttons">
+          <button type="submit">Save</button>
+          <button type="reset" onClick={handleCancel}>
+            Cancel
+          </button>
+        </div>
       </form>
     </>
   );

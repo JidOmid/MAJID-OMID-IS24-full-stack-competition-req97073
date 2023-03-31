@@ -16,6 +16,7 @@
     "react-dom": "^18.2.0",
     "react-table": "^7.8.0",
     "regenerator-runtime": "^0.13.11",
+    "swagger-ui-express": "^4.6.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
