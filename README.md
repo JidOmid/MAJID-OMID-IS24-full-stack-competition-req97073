@@ -5,7 +5,7 @@ Run App
 
 Clone with : 
 
-git clone git@github.com:JidOmid/MAJID-OMID-IS24-full-stack-competition-req97073.git
+git clone https://github.com/JidOmid/MAJID-OMID-IS24-full-stack-competition-req97073.git
 
 cd MAJID-OMID-IS24-full-stack-competition-req97073/
 
