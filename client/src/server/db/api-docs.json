@@ -1,0 +1,298 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "IMB Submission",
+    "description": "API Documentation",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "endpoints",
+      "description": "Everything about your Pets"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": ["endpoints"],
+        "summary": "Health endpoint",
+        "description": "Check if server is healthy",
+        "operationId": "checkHealth",
+        "responses": {
+          "200": {
+            "description": "Healthy"
+          }
+        }
+      }
+    },
+    "/get-data": {
+      "get": {
+        "tags": ["endpoints"],
+        "summary": "Grabs database",
+        "description": "Returns array of product objects",
+        "operationId": "grabData",
+        "responses": {
+          "200": {
+            "description": "Product list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AddedProduct"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/add-product": {
+      "post": {
+        "tags": ["endpoints"],
+        "summary": "Adds product",
+        "description": "Adds a product to db.json",
+        "operationId": "addProduct",
+        "requestBody": {
+          "description": "Product",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddProduct"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesfully added product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddedProduct"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Incorrect Field(s)"
+                    },
+                    "fields": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": ["methodology"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/edit-data": {
+      "patch": {
+        "tags": ["endpoints"],
+        "summary": "Edits product",
+        "description": "Edited existing product in db.json",
+        "operationId": "editProduct",
+        "requestBody": {
+          "description": "Product",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddedProduct"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesfully edited product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddedProduct"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Incorrect Field(s)"
+                    },
+                    "fields": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": ["methodology"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api-docs": {
+      "get": {
+        "tags": ["endpoints"],
+        "summary": "Api docs",
+        "description": "get api docs",
+        "operationId": "apiDocs",
+        "responses": {
+          "200": {
+            "description": "Return api-docs.json"
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddProduct": {
+        "type": "object",
+        "properties": {
+          "productName": {
+            "type": "string",
+            "example": "Microsoft"
+          },
+          "productOwnerName": {
+            "type": "string",
+            "example": "Steven Johnson"
+          },
+          "Developers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 5,
+            "example": ["Justin Donald", "George Robertson", "Dave Chapelle"]
+          },
+          "scrumMasterName": {
+            "type": "string",
+            "example": "Robert Jackson"
+          },
+          "startDate": {
+            "type": "string",
+            "example": "2023/07/19"
+          },
+          "methodology": {
+            "type": "string",
+            "example": "Agile"
+          }
+        }
+      },
+      "AddedProduct": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "example": "4ab2fde2-27af-4189-9a0d-046123fc31b1"
+          },
+          "productName": {
+            "type": "string",
+            "example": "Microsoft"
+          },
+          "productOwnerName": {
+            "type": "string",
+            "example": "Steven Johnson"
+          },
+          "Developers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 5,
+            "example": ["Justin Donald", "George Robertson", "Dave Chapelle"]
+          },
+          "scrumMasterName": {
+            "type": "string",
+            "example": "Robert Jackson"
+          },
+          "startDate": {
+            "type": "string",
+            "example": "2023/07/19"
+          },
+          "methodology": {
+            "type": "string",
+            "example": "Agile"
+          }
+        }
+      }
+    }
+  }
+}

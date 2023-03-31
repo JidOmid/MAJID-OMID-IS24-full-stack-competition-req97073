@@ -14,8 +14,13 @@ async function addProduct(req, res) {
         .status(400)
         .send({message: "Incorrect Field(s)", fields: validation});
     }
+    newProduct.startDate = new Date(newProduct.startDate)
+      .toISOString()
+      .slice(0, 10)
+      .split("-")
+      .join("/");
     //grab products and create list of existing Ids
-    const products = await read();
+    const products = await read("db");
     const idList = products.map(({productId}) => productId);
     //Instantiate newId. generate new productId and if it already exists in the db regenerate it. While it is near impossible for the generated Id to match an existing id, this loop ensures it is unique.
     let newId;

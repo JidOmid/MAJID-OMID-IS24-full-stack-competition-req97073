@@ -13,8 +13,13 @@ async function editProduct(req, res) {
         .status(400)
         .send({message: "Incorrect Field(s)", fields: validation});
     }
+    editedProduct.startDate = new Date(editedProduct.startDate)
+      .toISOString()
+      .slice(0, 10)
+      .split("-")
+      .join("/");
     //Grab list of products and instantiate an index
-    const products = await read();
+    const products = await read("db");
     let productsIndex;
     //Loop through list of productIds in database to see if the edited form matches an existing product.
     //If it does match, return the index of the matched product.
@@ -47,7 +52,7 @@ async function editProduct(req, res) {
     return res.status(200).send(editedProductMap);
   } catch (err) {
     console.log(err);
-    return null;
+    return res.status(500).send("Internal Server Error");
   }
 }
 

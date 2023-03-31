@@ -1,7 +1,7 @@
 //validateProduct takes product and a checkId param. checkId is only used in the case of the editProduct controller.
 function validateProduct(product, checkId = false) {
   //instantiate badValues as an empty array and deconstruct the keys from the product.
-  const badValues = [];
+  const badValues = new Set([]);
   const {
     productId,
     productName,
@@ -15,28 +15,28 @@ function validateProduct(product, checkId = false) {
   //check each field to ensure it exists and it is typeof string. If any fields are wrong, push to the badValues array. incorrect fields will be returned
   //only check for Id if required.
   if (checkId && (!productId || typeof productId !== "string"))
-    badValues.push("productId");
+    badValues.add("productId");
   if (!productName || typeof productName !== "string")
-    badValues.push("productName");
+    badValues.add("productName");
   if (!productOwnerName || typeof productOwnerName !== "string")
-    badValues.push("productOwnerName");
+    badValues.add("productOwnerName");
   if (!scrumMasterName || typeof scrumMasterName !== "string")
-    badValues.push("scrumMasterName");
+    badValues.add("scrumMasterName");
   //only allow agile and waterfall methodologies
   if (!methodology || !["Agile", "Waterfall"].includes(methodology))
-    badValues.push("methodology");
+    badValues.add("methodology");
   //check if Developers is an array
-  if (!Array.isArray(Developers)) badValues.push("Developers");
+  if (!Array.isArray(Developers)) badValues.add("Developers");
   //check if there is atleast 1 developer
-  if (!Developers.length) badValues.push("Developers");
+  if (!Developers?.length) badValues.add("Developers");
   //check if startDate is a valid date.
-  if (isNaN(Date.parse(startDate))) badValues.push("startDate");
+  if (isNaN(Date.parse(startDate))) badValues.add("startDate");
   //check each element in Developers is a string.
-  Developers.forEach((dev) => {
-    if (!dev || typeof dev !== "string") badValues.push("Developers");
+  Developers?.forEach((dev) => {
+    if (!dev || typeof dev !== "string") badValues.add("Developers");
   });
 
-  return badValues;
+  return [...badValues];
 }
 
 module.exports.validateProduct = validateProduct;
