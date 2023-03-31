@@ -4,4 +4,5 @@ module.exports = {
   ...require("./getData"),
   ...require("./addProduct"),
   ...require("./editProduct"),
+  ...require("./apiDocs"),
 };

@@ -1,9 +1,9 @@
 const {read} = require("../models");
 
-async function getData(req, res) {
+async function apiDocs(req, res) {
   try {
     //calls read model to grab data
-    const rawData = await read("db");
+    const rawData = await read("api-docs");
 
     //stringify and return data
     return res.status(200).send(JSON.stringify(rawData));
@@ -13,4 +13,4 @@ async function getData(req, res) {
   }
 }
 
-module.exports.getData = getData;
+module.exports.apiDocs = apiDocs;
